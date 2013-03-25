@@ -19,6 +19,10 @@
     "passport": "~0.1.16",
     "mongoose": "~3.6.0"
   },
+  "devDependencies": {
+    "zombie": "*",
+    "tap": "*"
+  },
   "licenses": [
     {
       "type": "MIT",
