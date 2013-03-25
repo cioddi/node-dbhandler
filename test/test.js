@@ -3,11 +3,24 @@ var post = require('./lib/post.js').post;
 
 var Browser = require("zombie");
 
-exports.run_tests = function(){
+exports.run_tests = function(done){
+
+	var tests = {
+		'test1':false,
+		'test2':false
+	};
+	checkIfTestsDone = function(){
+		var allDone = true;
+		for(var key in tests){
+			if(tests[key] === false)allDone = false
+		}
+		if(allDone)done();
+	};
 	// Load the page from localhost
 	browser = new Browser()
 
 	browser.visit("http://localhost:3000/book/cleardb");
+
 
 	test('check routes',function(t){
 		browser.visit("http://localhost:3000/book/read", function (arg1) {
@@ -16,6 +29,9 @@ exports.run_tests = function(){
 
 			t.equals(response.success, true,'test if read route responds correctly')
 			t.end();
+
+			tests['test1'] = true;
+			checkIfTestsDone();
 		});
 	});
 
@@ -33,6 +49,8 @@ exports.run_tests = function(){
 						var response = JSON.parse(browser.text());
 						t2.equals(response.data[0].name, 'Testbuch','test if read route responds correctly');
 						t2.end();
+						tests['test2'] = true;
+						checkIfTestsDone();
 					});
 				});
 				t.equals(response.success, true,'test if create route responds correctly');
