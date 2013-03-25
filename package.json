@@ -1,0 +1,32 @@
+{
+  "version": "0.0.1",
+  "name": "dbhandler",
+  "description": "dbhandler creates a crud webinterface from model config using mongoose (MongoDB) and express",
+  "keywords": [
+    "MongoDB",
+    "crud",
+    "rest",
+    "express"
+  ],
+  "homepage": "https://nettwurk.org/",
+  "author": "Max Tobias Weber <tobi@nettwurk.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cioddi/dbhandler"
+  },
+  "dependencies": {
+    "express": "~3.1.0",
+    "passport": "~0.1.16",
+    "mongoose": "~3.6.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "engines": { "node": ">= 0.8.0" },
+  "scripts": {
+    "test": "node test/server/app.js & tap --tap ./test/*.js && killall node"
+  }
+}
