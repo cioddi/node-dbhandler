@@ -65,7 +65,6 @@ exports.register_create = function(options){
 
 			// run 'after' function
 			if(typeof req.options.actions[action].after !== undefined){
-				console.log('hier');
 				for(var i in req.options.actions[action].after){
 					if(typeof req.options.actions[action].after[i] === 'function' &&
 						req.options.actions[action].after.hasOwnProperty(i))req.options.actions[action].after[i](req);
@@ -144,7 +143,8 @@ exports.register_update = function(options){
 		req.options = options;
 
 		var obj = JSON.parse(req.body.obj);
-		
+
+		console.log(obj)
 
 		var query = new exports.Query(action,req);
 
@@ -158,6 +158,7 @@ exports.register_update = function(options){
 
 		delete obj.user_id;
 		delete obj._id;
+		console.log(obj)
 		// var updateObj = options.db(obj);
 		options.db.findOneAndUpdate(dbquery,obj, function(err, saved) {
 			console.log(err);

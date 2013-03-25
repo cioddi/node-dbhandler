@@ -22,7 +22,6 @@
   "devDependencies": {
     "zombie": "*",
     "tap": "*",
-    "request": "*",
     "querystring": "*"
   },
   "licenses": [

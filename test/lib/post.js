@@ -9,7 +9,7 @@ exports.post = function(url,params,done){
 	var post_path = '/book/create';
 
 	var post_data = querystring.stringify(params);
-
+	console.log(params);
 	var post_options = {
 	  host: post_domain,
 	  port: post_port,
