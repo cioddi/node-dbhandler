@@ -32,7 +32,6 @@ exports.init = function(){
 };
 
 exports.close = function(){
-console.log('asd');
-	  // server.close()
 
+	  server.close()
 }

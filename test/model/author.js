@@ -13,7 +13,6 @@ var author = dbhandler.db.model('Author', authorSchema);
 
 app.dbhandlers.author = new dbhandler.init({
 	path: '/author',
-	crud:'crud',
 	actions:{
 		create:{},
 		read:{
@@ -28,9 +27,6 @@ app.dbhandlers.author = new dbhandler.init({
 			]
 		}
 	},
-	populate:[
-		'user_id'
-	],
 	db:author
 });
 
