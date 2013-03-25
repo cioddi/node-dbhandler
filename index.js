@@ -48,9 +48,12 @@ exports.register_create = function(options){
 	app.post(options.path+'/create',function(req,res){
 		req.options = options;
 		var action = 'create';
+		console.log('create this');
+		console.log(req.body.obj);
 
-		var obj = JSON.parse(req.body.obj);
+		var obj = req.param('obj', null);
 
+		obj = JSON.parse(obj);
 		if(typeof obj._id !== 'undefined'){
 			delete obj._id;
 		}
@@ -75,7 +78,7 @@ exports.register_create = function(options){
 
 exports.getPopulateColumns = function(action,req){
 	var returnList = [];
-	console.log(req.body);
+
 	if(typeof req.body !== 'undefined'){
 		if(typeof req.body.populate !== 'undefined'){
 			var populateList = req.body.populate;
@@ -93,9 +96,11 @@ exports.getPopulateColumns = function(action,req){
 
 exports.register_read = function(options){
 
-	app.post(options.path+'/read',function(req,res){
+	app.get(options.path+'/read',function(req,res){
 		var action = 'read';
 		req.options = options;
+		// console.log(req.query);
+		// console.log('asd');
 
 		var query = new exports.Query(action,req);
 		
@@ -174,7 +179,7 @@ exports.register_destroy = function(options){
 
 			var dbquery = query.build();
 
-console.log(dbquery);
+// console.log(dbquery);
 			if(JSON.stringify(dbquery) !== '{}' && typeof dbquery._id !== 'undefined'){
 
 				options.db.remove( dbquery, function(err, result ){
@@ -217,40 +222,43 @@ exports.init = function(options){
 
 	var self = this;
 
+
 	if(typeof options.actions.create !== 'undefined')exports.register_create(options);
 
-	if(typeof options.actions.read !== 'undefined')exports.register_read(options);
+	if(typeof options.actions.read !== 'undefined'){
+		exports.register_read(options);
+	}
 
 	if(typeof options.actions.update !== 'undefined')exports.register_update(options);
 
 	if(typeof options.actions.destroy !== 'undefined')exports.register_destroy(options);
 
 
-	self.read = function(query,done){
-			var action = 'read';
-			var req = {};
-			req.options = options;
-			req.body = query;
+	// self.read = function(query,done){
+	// 		var action = 'read';
+	// 		var req = {};
+	// 		req.options = options;
+	// 		req.body = query;
 
-			query = new exports.Query(action,req);
+	// 		query = new exports.Query(action,req);
 			
-			dbquery = options.db.find( query.build() );
+	// 		dbquery = options.db.find( query.build() );
 			
-			populateColumns = exports.getPopulateColumns(action,req);
-			console.log(db);
-			for(var i in populateColumns){
-				dbquery.populate(populateColumns[i]);
-			}
+	// 		populateColumns = exports.getPopulateColumns(action,req);
+	// 		console.log(db);
+	// 		for(var i in populateColumns){
+	// 			dbquery.populate(populateColumns[i]);
+	// 		}
 
-			if(typeof options.actions['read'].sort !== 'undefined'){
-				dbquery.sort(options.sort);
-			}
-			console.log(dbquery);
-			dbquery.exec(function(err, result ){
-				console.log(result);
-					done(err,result);
-			});
-	};
+	// 		if(typeof options.actions['read'].sort !== 'undefined'){
+	// 			dbquery.sort(options.sort);
+	// 		}
+	// 		console.log(dbquery);
+	// 		dbquery.exec(function(err, result ){
+	// 			console.log(result);
+	// 				done(err,result);
+	// 		});
+	// };
 
 
 
@@ -262,17 +270,17 @@ exports.init = function(options){
 	});
 
 	app.get(options.path+'/cleardb',function(req,res){
-		Options.db.remove({},function(){
+		options.db.remove({},function(){
 			res.send('leer');
 		});
 	});
 
-	app.get(options.path+'/read',function(req,res){
-		options.db.find({},function(err,result){
-			if(err)res.send(JSON.stringify({success:false}));
-			res.send(JSON.stringify({success:true,data:result}));
-		});
-	});
+	// app.get(options.path+'/read',function(req,res){
+	// 	options.db.find({},function(err,result){
+	// 		if(err)res.send(JSON.stringify({success:false}));
+	// 		res.send(JSON.stringify({success:true,data:result}));
+	// 	});
+	// });
 
 	return self;
 };
@@ -308,6 +316,18 @@ exports.Query = function(action,req){
 				}
 			}
 
+		}
+		if(typeof this.req.query !== 'undefined'){
+			
+			if(typeof this.req.options.actions[this.action] !== 'undefined'){
+				for(var key in this.req.options.actions[this.action].parameters){
+
+					var keystring = this.req.options.actions[this.action].parameters[key];
+					if(typeof this.req.query[keystring] !== 'undefined' &&
+						key !== 'populate')this.query[keystring] = this.req.query[keystring];
+
+				}
+			}
 		}
 	};
 

@@ -11,6 +11,7 @@ dbhandler.db = db;
 
 // Create the database.
 app = express();
+app.use(express.bodyParser());
 
 app.db = db;
 app.dbhandlers = {};
@@ -20,4 +21,3 @@ var author = require('../model/author.js').register(dbhandler);
 var book = require('../model/book.js').register(dbhandler);
 
 app.listen(3000);
-console.log('hallp')

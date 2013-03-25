@@ -19,7 +19,8 @@ app.dbhandlers.book = new dbhandler.init({
 		create:{},
 		read:{
 			parameters:[
-				'author_id'
+				'author_id',
+				'_id'
 			]
 		},
 		update:{},
