@@ -33,6 +33,6 @@
   ],
   "engines": { "node": ">= 0.8.0" },
   "scripts": {
-    "test": "node test/server/app.js & tap --tap ./test/*.js"
+    "test": "tap --tap ./test/init.js"
   }
 }

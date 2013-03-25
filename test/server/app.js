@@ -1,23 +1,38 @@
 var passport = require('passport');
 var express = require('express');
 var mongoose = require('mongoose');
+var server;
 
-var db = mongoose.createConnection('localhost', 'test_db');
 
-var dbhandler = require('../../');
+exports.init = function(){
+	var db = mongoose.createConnection('localhost', 'test_db');
 
-dbhandler.Schema = mongoose.Schema;
-dbhandler.db = db;
+	var dbhandler = require('../../');
 
-// Create the database.
-app = express();
-app.use(express.bodyParser());
+	dbhandler.Schema = mongoose.Schema;
+	dbhandler.db = db;
 
-app.db = db;
-app.dbhandlers = {};
+	// Create the database.
+	app = express();
+	app.use(express.bodyParser());
 
-// model definitions
-var author = require('../model/author.js').register(dbhandler);
-var book = require('../model/book.js').register(dbhandler);
+	app.db = db;
+	app.dbhandlers = {};
 
-app.listen(3000);
+	server = require('http').createServer(app);
+
+	// model definitions
+	var author = require('../model/author.js').register(dbhandler);
+	var book = require('../model/book.js').register(dbhandler);
+
+	server.listen(3000,function(){
+		console.log('server started at port 3000');
+	});
+	return exports;
+};
+
+exports.close = function(){
+console.log('asd');
+	  // server.close()
+
+}
