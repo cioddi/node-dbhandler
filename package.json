@@ -1,7 +1,7 @@
 {
   "version": "0.0.1",
   "name": "dbhandler",
-  "description": "dbhandler creates a crud webinterface from model config using mongoose (MongoDB) and express",
+  "description": "mongoose (MongoDB) and express crud webinterface from a model configuration",
   "keywords": [
     "MongoDB",
     "crud",

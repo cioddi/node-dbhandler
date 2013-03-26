@@ -24,7 +24,7 @@ app.dbh_models.author = new dbhandler.init({
 		create:{},
 		read:{
 			parameters:[
-				'author_id'
+				'_id'
 			]
 		},
 		update:{},
