@@ -26,7 +26,7 @@ exports.run_tests = function(done){
 	browser.visit("http://localhost:3000/book/cleardb");
 
 
-	
+
 	basic_test();
 
 	create_author();
@@ -49,9 +49,9 @@ var basic_test = function() {
 			checkIfTestsDone('test1');
 		});
 	});
-}
+};
 
-    
+
 
 // create book test obj
 var create_book = function(){
@@ -64,7 +64,8 @@ var create_book = function(){
 					t.equals(response.success, true,'/book/create');
 					t.end();
 
-					book_readAndCheckValue(item_id,'name','Testbook',update_book);
+					// book_readAndCheckValue(item_id,'name','Testbook',update_book);
+					update_book(item_id)
 				});
 	});
 };
@@ -73,25 +74,29 @@ var create_book = function(){
 var update_book = function(item_id){
 	test('test update book route',function(t){
 		post('/book/update',
-			{"obj":JSON.stringify({ "_id":item_id, "name": 'Testbook2',"description": 'Testdescription'})},
+			{"data":JSON.stringify([{ "_id":item_id, "name": 'blabla',"description": 'Testdescription'}])},
 			function (chunk) {
 				// var response = JSON.parse(chunk);
-				// console.log(chunk)
+				console.log(chunk)
 				t.end();
-				book_readAndCheckValue(item_id,'name','Testbook2',false);
+				book_readAndCheckValue(item_id,'name','blabla',false);
 		});
 	});
 };
 
 // read book
 var book_readAndCheckValue = function(item_id,key,value,next){
-	test('check values using "/read"',function(t){
+	test('check values using "/read" '+value,function(t2){
 		browser.visit("http://localhost:3000/book/read?_id="+item_id, function () {
 
 			var response = JSON.parse(browser.text());
-
-			t.equals(response.data[0][key], value,'/book/read');
-			t.end();
+			console.log('gelesen')
+			console.log(JSON.stringify(response.data))
+			console.log(response.data[0][key] + value);
+			t2.plan(1);
+			t2.equals(response.data[0][key].toString(), value.toString(),'/book/read '+value.toString()+' '+response.data[0][key].toString());
+			// t.equals('blabla', 'Testbook2','/author/create');
+			t2.end();
 
 
 			if(next === false){
@@ -112,6 +117,7 @@ var create_author = function(){
 					var response = JSON.parse(chunk);
 					var item_id = response.data._id;
 					t.equals(response.success, true,'/author/create');
+					
 					t.end();
 
 					author_readAndCheckValue(item_id,'name','Testauthor',create_book_with_author);
@@ -159,7 +165,7 @@ var create_book_with_author = function(author_id){
 // read book and populate author field
 var book_readAndPopulateAuthor = function(item_id,key,value,next){
 	test('check populated author_id field "book/read"',function(t){
-		console.log("http://localhost:3000/book/read?_id="+item_id+"&populate[]=author_id")
+		console.log("http://localhost:3000/book/read?_id="+item_id+"&populate[]=author_id");
 		browser.visit("http://localhost:3000/book/read?_id="+item_id+"&populate[]=author_id", function () {
 
 			var response = JSON.parse(browser.text());
