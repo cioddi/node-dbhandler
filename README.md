@@ -5,7 +5,7 @@ dbhandler creates a crud webinterface from model config using mongoose (MongoDB)
 [![Build Status](https://travis-ci.org/cioddi/node-dbhandler.png)](https://travis-ci.org/cioddi/node-dbhandler)
 
 ##diagram
-![Diagram](https://raw.github.com/cioddi/node-dbhandler/docs/img/diagram.jpg)
+![Diagram](https://raw.github.com/cioddi/node-dbhandler/master/docs/img/diagram.jpg)
 
 ##example
 
