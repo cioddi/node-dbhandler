@@ -27,7 +27,8 @@ app.dbhandlers.author = new dbhandler.init({
 			]
 		}
 	},
-	db:author
+	db:author,
+	debug:true
 });
 
 };

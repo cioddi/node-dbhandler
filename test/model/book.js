@@ -30,9 +30,12 @@ app.dbhandlers.book = new dbhandler.init({
 			parameters:[
 				'_id'
 			]
-		}
+		},
+		config:{}
 	},
-	db:book
+	db:book,
+	schema:bookSchema,
+	debug:true
 });
 
 }

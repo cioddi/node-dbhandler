@@ -10,7 +10,7 @@ exports.register_create = function(options){
 		req.options = options;
 		var action = 'create';
 
-		var obj = req.param('obj', null);
+		var obj = req.param('obj', '{}');
 
 		obj = JSON.parse(obj);
 		if(typeof obj._id !== 'undefined'){
@@ -19,7 +19,9 @@ exports.register_create = function(options){
 
 
 		history_module.create_history(req,obj);
+
 		obj = new options.db(obj);
+
 		obj.save(function(err, saved) {
 
 			if(typeof req.options.actions[action].after !== undefined){
@@ -41,20 +43,22 @@ exports.register_read = function(options){
 		req.options = options;
 
 		var query = new Query(action,req);
-		
 
-		dbquery = options.db.find( query.build() );
+		var skip = parseInt(req.param('start', 0));
+		var limit = parseInt(req.param('limit', 0));
 
+		dbquery = options.db.find( query.build(),null,{ skip: skip, limit: limit } );
+		console.log(req.param('start', 0));
 		populateColumns = lib.getPopulateColumns(action,req);
 
 		for(var i in populateColumns){
 			dbquery.populate(populateColumns[i]);
 		}
 
-
 		if(typeof options.actions['read'].sort !== 'undefined'){
 			dbquery.sort(options.sort);
 		}
+		
 
 		dbquery.exec(function(err, result ){
 			if (err || !result ) console.log(" an error has occurred" );
@@ -62,12 +66,17 @@ exports.register_read = function(options){
 
 				lib.null_passwords(result);
 
+				console.log(result.length)
 				var returnObj = {
 						success:true,
 						data:result
 					};
+				options.db.count(query.build(), function(err, result){
 
-				res.send(JSON.stringify(returnObj));
+					returnObj.count = result;
+					res.send(JSON.stringify(returnObj));
+				});
+				
 			}
 		});
 	});
@@ -102,13 +111,11 @@ exports.register_update = function(options){
 
 		var objs = JSON.parse(req.body.data);
 
-
 		for (var i = 0; i < objs.length; i++) {
 
 			if(typeof objs[i] !== 'undefined'){
 				var updateFunc = exports.getUpdateFunction(objs[i],req,options);
 				callback_array.push(updateFunc);
-
 			}
 		}
 
@@ -170,6 +177,16 @@ exports.register_destroy = function(options){
 	});
 };
 
+exports.register_config = function(options) {
+  app.get(options.path+'/config',function(req,res){
+
+
+			res.send(JSON.stringify({success:true,data:options.schema}));
+
+	});
+};
+
+    
 // init
 exports.init = function(options){
 
@@ -182,6 +199,8 @@ exports.init = function(options){
 	if(typeof options.actions.update !== 'undefined')exports.register_update(options);
 
 	if(typeof options.actions.destroy !== 'undefined')exports.register_destroy(options);
+
+	if(typeof options.actions.config !== 'undefined')exports.register_config(options);
 
 	if(typeof options.debug !== 'undefined')require('./lib/debug.js').debug_mode(options);
 

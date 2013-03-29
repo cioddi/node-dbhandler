@@ -19,11 +19,12 @@ exports.run_tests = function(done){
 		}
 		if(allDone)done();
 	};
-	
+
 	// Load the page from localhost
 	browser = new Browser();
 
 	browser.visit("http://localhost:3000/book/cleardb");
+	browser.visit("http://localhost:3000/author/cleardb");
 
 
 
